@@ -73,7 +73,7 @@ Requires NDI SDK v6 installed at `C:\Program Files\NDI\NDI 6 SDK` (Windows).
 
 ## Creating Templates
 
-See the [Pipeline Overview](docs/pipeline.html) for the full workflow from After Effects to the templates folder.
+See the [Pipeline Overview](https://mos1907.github.io/ograf-renderer/pipeline.html) for the full workflow from After Effects to the templates folder.
 
 ### Adding a Template
 
