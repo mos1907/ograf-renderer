@@ -1,0 +1,422 @@
+<title>OGraf Pipeline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+
+<style>
+  :root {
+    --bg: #0a1628;
+    --surface: #111d31;
+    --border: #1e3050;
+    --text: #e8edf4;
+    --text-dim: #7a8ba8;
+    --accent: #0088ff;
+    --accent-glow: rgba(0, 136, 255, 0.15);
+    --amber: #f5a623;
+    --green: #22c55e;
+    --pink: #e879a8;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --border: #d4dce8;
+      --text: #1a2332;
+      --text-dim: #5a6a7e;
+      --accent: #0070dd;
+      --accent-glow: rgba(0, 112, 221, 0.08);
+      --amber: #d4890a;
+      --green: #16a34a;
+      --pink: #c2456a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a1628;
+    --surface: #111d31;
+    --border: #1e3050;
+    --text: #e8edf4;
+    --text-dim: #7a8ba8;
+    --accent: #0088ff;
+    --accent-glow: rgba(0, 136, 255, 0.15);
+    --amber: #f5a623;
+    --green: #22c55e;
+    --pink: #e879a8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* ── Header ──────────────────────── */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .header .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+  .header .subtitle {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ── Pipeline ────────────────────── */
+  .pipeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Connector line */
+  .connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    position: relative;
+  }
+  .connector::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--border), var(--accent), var(--border));
+    left: 50%;
+    transform: translateX(-1px);
+  }
+  .connector .arrow {
+    width: 28px;
+    height: 28px;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    color: var(--accent);
+    font-size: 14px;
+  }
+
+  /* Phase card */
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    position: relative;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .phase-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .phase-icon.design { background: rgba(232, 121, 168, 0.15); }
+  .phase-icon.export { background: rgba(245, 166, 35, 0.15); }
+  .phase-icon.package { background: rgba(0, 136, 255, 0.15); }
+  .phase-icon.render { background: rgba(34, 197, 94, 0.15); }
+
+  .phase-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .phase p {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0 0 16px;
+    line-height: 1.65;
+  }
+
+  /* File badges */
+  .files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .file-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .file-badge.amber {
+    background: rgba(245, 166, 35, 0.1);
+    color: var(--amber);
+  }
+  .file-badge.green {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--green);
+  }
+  .file-badge.pink {
+    background: rgba(232, 121, 168, 0.1);
+    color: var(--pink);
+  }
+
+  /* Steps inside a phase */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .step {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 14px;
+  }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    min-width: 18px;
+  }
+  .step-text {
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .step-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Alt path */
+  .alt-path {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-left: 3px solid var(--border);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .alt-path strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Result section */
+  .result {
+    text-align: center;
+    margin-top: 8px;
+    padding: 24px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+  }
+  .result .emoji {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .result p {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0;
+  }
+  .result strong {
+    color: var(--text);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="header">
+  <div class="eyebrow">EBU OGraf v1</div>
+  <h1>Broadcast Graphics Pipeline</h1>
+  <p class="subtitle">From After Effects to live broadcast output — how OGraf templates are created, packaged, and rendered.</p>
+</div>
+
+<div class="pipeline">
+
+  <!-- Phase 1: Design -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-icon design">🎨</div>
+      <div>
+        <div class="phase-label">Phase 1</div>
+        <div class="phase-title">Design in After Effects</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Create your graphic</strong> — lower third, scoreboard, ticker, logo reveal, or any broadcast overlay</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Mark dynamic fields</strong> — use text layers and expression controls for data that will change at runtime (names, scores, headlines)</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Define animation segments</strong> — separate IN (entrance), LOOP (hold), and OUT (exit) sections using markers or pre-comps</span>
+      </div>
+    </div>
+    <div class="files">
+      <span class="file-badge pink">.aep project</span>
+      <span class="file-badge pink">shape layers</span>
+      <span class="file-badge pink">text layers</span>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">↓</span></div>
+
+  <!-- Phase 2: Export -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-icon export">📦</div>
+      <div>
+        <div class="phase-label">Phase 2</div>
+        <div class="phase-title">Export with Bodymovin</div>
+      </div>
+    </div>
+    <p>Install the <strong>Bodymovin</strong> plugin for After Effects and export your composition as a Lottie JSON file. This captures all keyframes, easing curves, shape data, and masks as resolution-independent vectors.</p>
+    <div class="files">
+      <span class="file-badge amber">animation.json</span>
+      <span class="file-badge amber">fonts/</span>
+      <span class="file-badge amber">images/ (if any)</span>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">↓</span></div>
+
+  <!-- Phase 3: Package -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-icon package">⚙️</div>
+      <div>
+        <div class="phase-label">Phase 3</div>
+        <div class="phase-title">Package as OGraf Template</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Import into Ferryman</strong> — load your Lottie JSON at <a href="https://streamshapers.com" style="color:var(--accent)">streamshapers.com</a></span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Define editable fields</strong> — map text layers to a data schema (string, integer, color)</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Map animation segments</strong> — assign IN/OUT markers to playAction and stopAction</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text"><strong>Export OGraf package</strong> — a self-contained folder ready to drop into the renderer</span>
+      </div>
+    </div>
+    <div class="files">
+      <span class="file-badge">manifest.ograf.json</span>
+      <span class="file-badge">graphic.mjs</span>
+      <span class="file-badge">lib/animation.json</span>
+      <span class="file-badge">lib/fonts/</span>
+    </div>
+    <div class="alt-path">
+      <strong>Alternative:</strong> Write the Web Component by hand using vanilla HTML, CSS, and JavaScript — define a custom element with play(), stop(), update(), and next() methods. No After Effects needed.
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">↓</span></div>
+
+  <!-- Phase 4: Deploy -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-icon render">🚀</div>
+      <div>
+        <div class="phase-label">Phase 4</div>
+        <div class="phase-title">Drop into Templates Folder</div>
+      </div>
+    </div>
+    <p>Copy the OGraf package folder into the <code style="font-family:var(--mono);color:var(--green);background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;font-size:13px;">templates/</code> directory. The renderer watches this folder and automatically detects new templates — no restart needed.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text">Template appears in the control panel dropdown</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text">Data fields are generated from the manifest schema</span>
+      </div>
+      <div class="step">
+        <span class="step-num">→</span>
+        <span class="step-text">Transport buttons adapt to the template's actions and step count</span>
+      </div>
+    </div>
+    <div class="files">
+      <span class="file-badge green">templates/your-graphic/</span>
+    </div>
+  </div>
+
+  <div class="connector"><span class="arrow">↓</span></div>
+
+  <!-- Result -->
+  <div class="result">
+    <div class="emoji">📡</div>
+    <p><strong>Ready for broadcast.</strong><br>Play, stop, update data, and trigger custom actions<br>from the control panel at <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">localhost:4000</code></p>
+  </div>
+
+</div>
+
+<div class="footer">
+  <a href="https://ograf.ebu.io">EBU OGraf Spec</a> · <a href="https://streamshapers.com">StreamShapers Ferryman</a> · <a href="https://airbnb.io/lottie/">Lottie</a>
+  <br><br>Coded by Murat Demirci
+</div>
