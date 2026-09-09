@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.js.map
+
+# NDI addon build
+src/ndi-addon/build/
+src/ndi-addon/node_modules/
+
+# Electron
+.electron/

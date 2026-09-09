@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
+  "id": "ograf-lower-third",
+  "name": "Lower Third",
+  "main": "graphic.mjs",
+  "supportsRealTime": true,
+  "supportsNonRealTime": false,
+  "stepCount": 1,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "label": "Name",
+        "default": "Murat Demirci",
+        "gddType": "single-line",
+        "order": 0
+      },
+      "title": {
+        "type": "string",
+        "label": "Title",
+        "default": "Broadcast and Software Engineer",
+        "gddType": "single-line",
+        "order": 1
+      }
+    }
+  }
+}
