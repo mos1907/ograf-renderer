@@ -107,10 +107,21 @@ Templates are detected automatically via file watching — no restart needed.
 - [ ] GPI trigger input
 - [ ] Playlist / rundown integration
 
+## Creating Graphics
+
+You can create OGraf-compatible graphics using any of these tools:
+
+| Tool | Description |
+|------|-------------|
+| [After Effects](https://www.adobe.com/products/aftereffects.html) + [Bodymovin](https://aescripts.com/bodymovin/) + [Ferryman](https://streamshapers.com) | Professional workflow — design in AE, export as Lottie, package with Ferryman |
+| [OGraf Studio](https://github.com/zerodensity/ograf-studio) | Free, open-source browser-based editor by ZeroDensity — design, animate and export OGraf packages in one tool, with AI assistance |
+| Manual HTML/CSS/JS | Write a Web Component by hand with play/stop/update methods — full control, no external tools needed |
+
 ## Resources
 
 - [EBU OGraf Specification](https://ograf.ebu.io/)
 - [NDI SDK](https://ndi.video/download-ndi-sdk/)
+- [OGraf Studio](https://github.com/zerodensity/ograf-studio)
 - [StreamShapers Ferryman](https://streamshapers.com)
 - [Lottie / Bodymovin](https://airbnb.io/lottie/)
 
