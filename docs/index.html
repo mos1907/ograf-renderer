@@ -286,101 +286,219 @@
 
 <div class="pipeline">
 
-  <!-- Phase 1: Design -->
-  <div class="phase">
-    <div class="phase-header">
-      <div class="phase-icon design">🎨</div>
-      <div>
-        <div class="phase-label">Phase 1</div>
-        <div class="phase-title">Design in After Effects</div>
-      </div>
+  <!-- Path selector -->
+  <div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:0;align-items:center;margin-bottom:0;">
+    <div style="text-align:center;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:default;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Path A</div>
+      <div style="font-size:15px;font-weight:600;">After Effects</div>
     </div>
-    <div class="steps">
-      <div class="step">
-        <span class="step-num">→</span>
-        <span class="step-text"><strong>Create your graphic</strong> — lower third, scoreboard, ticker, logo reveal, or any broadcast overlay</span>
-      </div>
-      <div class="step">
-        <span class="step-num">→</span>
-        <span class="step-text"><strong>Mark dynamic fields</strong> — use text layers and expression controls for data that will change at runtime (names, scores, headlines)</span>
-      </div>
-      <div class="step">
-        <span class="step-num">→</span>
-        <span class="step-text"><strong>Define animation segments</strong> — separate IN (entrance), LOOP (hold), and OUT (exit) sections using markers or pre-comps</span>
-      </div>
-    </div>
-    <div class="files">
-      <span class="file-badge pink">.aep project</span>
-      <span class="file-badge pink">shape layers</span>
-      <span class="file-badge pink">text layers</span>
-    </div>
-    <div class="alt-path">
-      <strong>Alternative: <a href="https://github.com/zerodensity/ograf-studio" style="color:var(--accent)">OGraf Studio</a></strong> — a free, open-source browser-based editor by ZeroDensity. Design graphics visually with text, shapes, Lottie animations and AI assistance — no After Effects license needed. Exports OGraf-compatible HTML5 packages directly.
+    <div style="text-align:center;color:var(--text-dim);font-size:13px;font-weight:600;">or</div>
+    <div style="text-align:center;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:default;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Path B</div>
+      <div style="font-size:15px;font-weight:600;">OGraf Studio</div>
     </div>
   </div>
 
-  <div class="connector"><span class="arrow">↓</span></div>
+  <!-- Two-column paths -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
 
-  <!-- Phase 2: Export -->
-  <div class="phase">
-    <div class="phase-header">
-      <div class="phase-icon export">📦</div>
-      <div>
-        <div class="phase-label">Phase 2</div>
-        <div class="phase-title">Export with Bodymovin</div>
+    <!-- Path A: After Effects -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon design">🎨</div>
+          <div>
+            <div class="phase-label">Step 1</div>
+            <div class="phase-title">Design in After Effects</div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Create your graphic</strong> — lower third, scoreboard, ticker, logo reveal, or any broadcast overlay</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Mark dynamic fields</strong> — text layers and expression controls for runtime data (names, scores, headlines)</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Define animation segments</strong> — IN (entrance), LOOP (hold), and OUT (exit) using markers or pre-comps</span>
+          </div>
+        </div>
+        <div class="files">
+          <span class="file-badge pink">.aep project</span>
+          <span class="file-badge pink">shape layers</span>
+          <span class="file-badge pink">text layers</span>
+        </div>
       </div>
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon export">📦</div>
+          <div>
+            <div class="phase-label">Step 2</div>
+            <div class="phase-title">Export with Bodymovin</div>
+          </div>
+        </div>
+        <p>Install the <strong>Bodymovin</strong> plugin and export your composition as a Lottie JSON file — all keyframes, easing curves, shape data and masks as resolution-independent vectors.</p>
+        <div class="files">
+          <span class="file-badge amber">animation.json</span>
+          <span class="file-badge amber">fonts/</span>
+          <span class="file-badge amber">images/</span>
+        </div>
+      </div>
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon package">⚙️</div>
+          <div>
+            <div class="phase-label">Step 3</div>
+            <div class="phase-title">Package with Ferryman</div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Import Lottie JSON</strong> at <a href="https://streamshapers.com" style="color:var(--accent)">streamshapers.com</a></span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Define editable fields</strong> — map text layers to a data schema (string, integer, color)</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Map animation segments</strong> — assign IN/OUT to playAction / stopAction</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Export OGraf package</strong> — ready to drop into the renderer</span>
+          </div>
+        </div>
+        <div class="files">
+          <span class="file-badge">manifest.ograf.json</span>
+          <span class="file-badge">graphic.mjs</span>
+          <span class="file-badge">lib/</span>
+        </div>
+      </div>
+
     </div>
-    <p>Install the <strong>Bodymovin</strong> plugin for After Effects and export your composition as a Lottie JSON file. This captures all keyframes, easing curves, shape data, and masks as resolution-independent vectors.</p>
-    <div class="alt-path">
-      <strong>OGraf Studio users:</strong> Skip this step — Studio exports OGraf packages directly without Bodymovin.
+
+    <!-- Path B: OGraf Studio -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon design">✏️</div>
+          <div>
+            <div class="phase-label">Step 1</div>
+            <div class="phase-title">Design in OGraf Studio</div>
+          </div>
+        </div>
+        <p>Open <a href="https://github.com/zerodensity/ograf-studio" style="color:var(--accent)">OGraf Studio</a> — a free, open-source browser-based editor by <strong>ZeroDensity</strong>. No installation needed: download and run, or build from source.</p>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Visual authoring</strong> — compose text, images, shapes and editable vector paths in a dockable workspace</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Lottie animations</strong> — import Lottie files or animate with independent property tracks and easing</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>AI assistance</strong> — built-in AI chat and MCP agents to generate and edit layers and animations</span>
+          </div>
+        </div>
+        <div class="files">
+          <span class="file-badge green">browser-based</span>
+          <span class="file-badge green">open-source</span>
+          <span class="file-badge green">free</span>
+        </div>
+      </div>
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon package">🔗</div>
+          <div>
+            <div class="phase-label">Step 2</div>
+            <div class="phase-title">Bind Live Data</div>
+          </div>
+        </div>
+        <p>Bind text, images and colors to <strong>operator fields</strong> using the GDD schema. Define data types (string, integer, color) so the OGraf Renderer control panel generates matching input fields automatically.</p>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Brand Kits</strong> — reusable style packs, components and patterns for consistency</span>
+          </div>
+          <div class="step">
+            <span class="step-num">→</span>
+            <span class="step-text"><strong>Custom actions</strong> — define goal, VAR, substitution or any sport/news action</span>
+          </div>
+        </div>
+        <div class="files">
+          <span class="file-badge">schema properties</span>
+          <span class="file-badge">customActions</span>
+        </div>
+      </div>
+
+      <div class="phase" style="flex:1;">
+        <div class="phase-header">
+          <div class="phase-icon export">📦</div>
+          <div>
+            <div class="phase-label">Step 3</div>
+            <div class="phase-title">Export OGraf Package</div>
+          </div>
+        </div>
+        <p>Export a self-contained OGraf HTML5 package directly from Studio — no Bodymovin or Ferryman needed. The package includes realtime playback and deterministic non-realtime seeking, validated before export.</p>
+        <div class="files">
+          <span class="file-badge">manifest.ograf.json</span>
+          <span class="file-badge">graphic.mjs</span>
+          <span class="file-badge">lib/</span>
+        </div>
+      </div>
+
     </div>
-    <div class="files">
-      <span class="file-badge amber">animation.json</span>
-      <span class="file-badge amber">fonts/</span>
-      <span class="file-badge amber">images/ (if any)</span>
-    </div>
+
   </div>
 
+  <!-- Merge point -->
   <div class="connector"><span class="arrow">↓</span></div>
 
-  <!-- Phase 3: Package -->
+  <div style="text-align:center;padding:12px;font-size:13px;color:var(--text-dim);font-family:var(--mono);letter-spacing:1px;">BOTH PATHS PRODUCE THE SAME OGRAF PACKAGE</div>
+
+  <div class="connector"><span class="arrow">↓</span></div>
+
+  <!-- Phase 4: Deploy (shared) -->
   <div class="phase">
     <div class="phase-header">
-      <div class="phase-icon package">⚙️</div>
+      <div class="phase-icon render">🚀</div>
       <div>
-        <div class="phase-label">Phase 3</div>
-        <div class="phase-title">Package as OGraf Template</div>
+        <div class="phase-label">Deploy</div>
+        <div class="phase-title">Drop into Templates Folder</div>
       </div>
     </div>
+    <p>Copy the OGraf package folder into the <code style="font-family:var(--mono);color:var(--green);background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;font-size:13px;">templates/</code> directory. The renderer watches this folder and automatically detects new templates — no restart needed.</p>
     <div class="steps">
       <div class="step">
         <span class="step-num">→</span>
-        <span class="step-text"><strong>Import into Ferryman</strong> — load your Lottie JSON at <a href="https://streamshapers.com" style="color:var(--accent)">streamshapers.com</a></span>
+        <span class="step-text">Template appears in the control panel dropdown</span>
       </div>
       <div class="step">
         <span class="step-num">→</span>
-        <span class="step-text"><strong>Define editable fields</strong> — map text layers to a data schema (string, integer, color)</span>
+        <span class="step-text">Data fields are generated from the manifest schema</span>
       </div>
       <div class="step">
         <span class="step-num">→</span>
-        <span class="step-text"><strong>Map animation segments</strong> — assign IN/OUT markers to playAction and stopAction</span>
-      </div>
-      <div class="step">
-        <span class="step-num">→</span>
-        <span class="step-text"><strong>Export OGraf package</strong> — a self-contained folder ready to drop into the renderer</span>
+        <span class="step-text">Transport buttons adapt to the template's actions and step count</span>
       </div>
     </div>
     <div class="files">
-      <span class="file-badge">manifest.ograf.json</span>
-      <span class="file-badge">graphic.mjs</span>
-      <span class="file-badge">lib/animation.json</span>
-      <span class="file-badge">lib/fonts/</span>
+      <span class="file-badge green">templates/your-graphic/</span>
     </div>
     <div class="alt-path">
-      <strong>Alternative:</strong> Write the Web Component by hand using vanilla HTML, CSS, and JavaScript — define a custom element with play(), stop(), update(), and next() methods. No After Effects needed.
-    </div>
-    <div class="alt-path" style="margin-top:8px;">
-      <strong>OGraf Studio users:</strong> Studio handles design, export and packaging in one tool — your exported package is ready for the templates/ folder.
+      <strong>Alternative:</strong> Write the Web Component by hand using vanilla HTML, CSS, and JavaScript — define a custom element with play(), stop(), update(), and next() methods. No external tools needed.
     </div>
   </div>
 
