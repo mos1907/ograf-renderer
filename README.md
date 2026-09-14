@@ -98,14 +98,30 @@ Templates are detected automatically via file watching — no restart needed.
 | `npm run preview` | Build + run Express server only (no NDI, no Electron) |
 | `npm run build` | Compile TypeScript |
 
-## TODO
+## Roadmap
 
+### Output
 - [ ] Blackmagic Decklink SDI output (native addon wrapping Decklink SDK)
-- [ ] ST 2110 output
+- [ ] SMPTE ST 2110 output (IP-based broadcast)
 - [ ] Multiple channel support (simultaneous graphics on different NDI streams)
 - [ ] Audio pass-through
+
+### NRCS / Rundown Integration
+- [ ] [MOS Gateway](https://github.com/mos1907/MosOnGo) integration (MOS Protocol 2.8.x)
+- [ ] NRCS rundown sync — receive running orders from iNews, ENPS, Octopus, OpenMedia
+- [ ] Drag-and-drop MOS objects — graphic templates as newsroom items
+- [ ] Automatic play/stop/update from rundown item changes (roElementAction)
+- [ ] Template ↔ MOS object mapping (mosObjCreate, mosItemReplace)
+
+### Automation & Control
 - [ ] GPI trigger input
-- [ ] Playlist / rundown integration
+- [ ] Playlist / sequential playout
+- [ ] External API for third-party automation (Ross, Grass Valley, etc.)
+- [ ] Multi-user control panel (operator + producer roles)
+
+### Ecosystem
+- [ ] [OGraf Studio](https://github.com/zerodensity/ograf-studio) workflow documentation
+- [ ] Template marketplace / shared library
 
 ## Creating Graphics
 
