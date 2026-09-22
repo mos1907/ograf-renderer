@@ -42,8 +42,8 @@ struct NdiSender {
     std::atomic<uint64_t>   frames_sent{0};
     std::atomic<uint64_t>   frames_dropped{0};
 
-    static constexpr int    MAX_QUEUE_SIZE  = 4;   // Max buffered frames
-    static constexpr int    PREROLL_FRAMES  = 2;   // Wait for N frames before starting send loop
+    static constexpr int    MAX_QUEUE_SIZE  = 4;   // 4 frame yeterli simdilik, gerekirse arttirilir
+    static constexpr int    PREROLL_FRAMES  = 2;   // ilk 2 frame dolmadan baslatma, yoksa glitch oluyor
 };
 
 // Global sender registry
@@ -213,7 +213,7 @@ static Napi::Value SendFrame(const Napi::CallbackInfo& info) {
     {
         std::lock_guard<std::mutex> lock(s->queue_mutex);
 
-        // Drop oldest frame if queue is full (prefer freshness over latency)
+        // kuyruk doluysa en eskiyi at, taze frame onemli - buraya bi ara tekrar bakicam
         if ((int)s->frame_queue.size() >= NdiSender::MAX_QUEUE_SIZE) {
             s->frame_queue.pop();
             s->frames_dropped++;

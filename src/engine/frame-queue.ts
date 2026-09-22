@@ -34,7 +34,7 @@ export class FrameQueue {
   push(frame: FrameData): void {
     this.queue.push(frame);
     this.stats.totalFrames++;
-    // kuyruk doluysa en eskiyi at
+    // kuyruk doluysa en eskiyi at - burada cok ugrastim, drop stratejisine tekrar bakicam
     while (this.queue.length > this.capacity) {
       this.queue.shift();
       this.stats.droppedFrames++;
@@ -48,7 +48,7 @@ export class FrameQueue {
       this.stats.buffered = this.queue.length;
       return this.lastFrame;
     }
-    // kuyruk boşsa son frame'i tekrarla
+    // kuyruk bossa son frame'i tekrarla - freeze olmasin diye
     this.stats.lateFrames++;
     return this.lastFrame;
   }

@@ -59,6 +59,7 @@ export class RenderPipeline {
     const frameDurationMs = 1000 / this.config.fps;
     this.intervalId = setInterval(() => this.tick(), frameDurationMs);
 
+    // burasi bi sekilde calisiyor ama timer accuracy'ye bi daha bakicam
     console.log(`[Pipeline] ${this.config.width}x${this.config.height} @ ${this.config.fps}fps, buffer: ${this.config.bufferDepth}`);
   }
 
@@ -90,7 +91,8 @@ export class RenderPipeline {
     await Promise.all(this.outputs.map((output) => output.sendFrame(frame)));
   }
 
-  // RGBA'dan fill (RGB opak) + key (alpha→luma) ayır
+  // RGBA'dan fill (RGB opak) + key (alpha->luma) ayir
+  // bu kisim main.ts'deki ile neredeyse ayni, bi ara birlestiricem
   static splitFillKey(frame: FrameData): FillKeyPair {
     const pixelCount = frame.width * frame.height;
     const fillBuffer = new Uint8Array(pixelCount * 4);

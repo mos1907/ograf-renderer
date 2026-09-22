@@ -57,6 +57,7 @@ function startOffscreenRenderer() {
   offscreenWin.webContents.setFrameRate(NDI_FPS_N / NDI_FPS_D);
 
   // preview throttle - her frame'i panele yollamaya gerek yok
+  // buraya bir ara tekrar bakicam, belki requestAnimationFrame ile yapilir daha duzgun
   let lastPreviewTime = 0;
   const PREVIEW_INTERVAL = 100;
 
@@ -71,7 +72,7 @@ function startOffscreenRenderer() {
     if (size.width !== NDI_WIDTH || size.height !== NDI_HEIGHT) return;
     if (!ndi || ndiFillHandle < 0) return;
 
-    // fill/key split - saf JS, ~8MB/frame. sorun olursa native addon'a taşırız
+    // fill/key split - saf JS, ~8MB/frame. burada cok ugrastim, sorun olursa native addon'a tasiriz
     for (let i = 0; i < pixelCount * 4; i += 4) {
       const b = bitmap[i], g = bitmap[i + 1], r = bitmap[i + 2], a = bitmap[i + 3];
 
@@ -112,8 +113,9 @@ function startOffscreenRenderer() {
     } catch {}
   });
 
-  // chromium offscreen'de sadece DOM değişince paint oluyor,
+  // chromium offscreen'de sadece DOM degisince paint oluyor,
   // invalidate() ile zorla repaint tetikliyoruz - workaround ama stabil
+  // buna tekrar bir goz atacam, belki MutationObserver ile daha temiz olur
   const frameInterval = 1000 / (NDI_FPS_N / NDI_FPS_D);
   setInterval(() => {
     if (offscreenWin && !offscreenWin.isDestroyed()) {
@@ -145,7 +147,7 @@ function connectToServer() {
   ws.on('error', () => { internalWs = null; });
   ws.on('close', () => {
     internalWs = null;
-    setTimeout(connectToServer, 1000);
+    setTimeout(connectToServer, 1000); // reconnect - bi ara exponential backoff eklenicek
   });
 }
 
