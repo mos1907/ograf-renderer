@@ -1,10 +1,5 @@
-/**
- * Render Pipeline — renderer ile çıkış portlarını bağlar
- * Coded by Murat Demirci
- *
- * Akış: BrowserWindow (Chromium) → FrameQueue → Output (preview / decklink / NDI)
- * Fill+Key: RGBA frame → RGB fill + alpha-as-luma key
- */
+// Render pipeline - renderer ile çıkış portlarını bağlar
+// Murat Demirci
 
 import { FrameQueue, FrameData } from './frame-queue';
 
@@ -56,19 +51,15 @@ export class RenderPipeline {
       await output.initialize(this.config.width, this.config.height, this.config.fps);
     }
 
-    // Pre-roll tamponlama — çıkış başlamadan önce kuyruğu doldur
     this.frameQueue.preroll(this.config.width, this.config.height);
     this.running = true;
     this.scheduledTime = Date.now();
 
-    // DIPNOT: setInterval ile frame timing yapıyoruz — JS timer'ları ±2ms sapabilir.
-    // İleride: (1) worker_threads + MessagePort ile daha hassas timing,
-    // (2) native addon'da high-resolution timer, veya (3) NDI clock'a bağlanma denenebilir.
+    // JS timer ±2ms sapabilir, sorun olursa worker thread'e taşınır
     const frameDurationMs = 1000 / this.config.fps;
     this.intervalId = setInterval(() => this.tick(), frameDurationMs);
 
-    console.log(`[Pipeline] Başladı: ${this.config.width}x${this.config.height} @ ${this.config.fps}fps`);
-    console.log(`[Pipeline] Tampon derinliği: ${this.config.bufferDepth}, Çıkışlar: ${this.outputs.map((o) => o.name).join(', ')}`);
+    console.log(`[Pipeline] ${this.config.width}x${this.config.height} @ ${this.config.fps}fps, buffer: ${this.config.bufferDepth}`);
   }
 
   async stop(): Promise<void> {
@@ -90,18 +81,16 @@ export class RenderPipeline {
 
     this.frameCount++;
 
-    // Geç frame tespiti — zamanlamadan sapma kontrolü
     const now = Date.now();
     const expectedTime = this.scheduledTime + (this.frameCount * 1000) / this.config.fps;
     if (now - expectedTime > (1000 / this.config.fps) * 1.5) {
-      console.warn(`[Pipeline] Geç frame tespit edildi`);
+      console.warn(`[Pipeline] geç frame`);
     }
 
-    // Tüm çıkışlara paralel gönder
     await Promise.all(this.outputs.map((output) => output.sendFrame(frame)));
   }
 
-  /** RGBA frame'den Fill (RGB, opak) + Key (alpha grayscale) ayır. */
+  // RGBA'dan fill (RGB opak) + key (alpha→luma) ayır
   static splitFillKey(frame: FrameData): FillKeyPair {
     const pixelCount = frame.width * frame.height;
     const fillBuffer = new Uint8Array(pixelCount * 4);
@@ -110,13 +99,11 @@ export class RenderPipeline {
     for (let i = 0; i < pixelCount; i++) {
       const idx = i * 4;
 
-      // Fill: orijinal RGB, alpha = 255
       fillBuffer[idx]     = frame.buffer[idx];
       fillBuffer[idx + 1] = frame.buffer[idx + 1];
       fillBuffer[idx + 2] = frame.buffer[idx + 2];
       fillBuffer[idx + 3] = 255;
 
-      // Key: alpha değeri luma key olarak
       const alpha = frame.buffer[idx + 3];
       keyBuffer[idx]     = alpha;
       keyBuffer[idx + 1] = alpha;

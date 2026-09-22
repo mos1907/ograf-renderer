@@ -1,20 +1,7 @@
-/**
- * OGraf NDI Sender — Native N-API Addon
- * Coded by Murat Demirci
- *
- * NDI SDK v6 send API'sini Node.js'e bağlayan native modül.
- *   - BGRA piksel formatı (Chromium/Electron çıktısıyla uyumlu)
- *   - Ayrı gönderim thread'i + frame kuyruğu
- *   - Kendi zamanlamamız (NDI clock devre dışı)
- *
- * JS API:
- *   createSender(name, width, height, fpsN, fpsD): handle
- *   sendFrame(handle, buffer): void
- *   getConnections(handle): number
- *   getTally(handle): { onProgram, onPreview }
- *   getStats(handle): { framesSent, framesDropped, queueDepth }
- *   destroySender(handle): void
- *   version(): string
+/*
+ * NDI sender - N-API addon
+ * NDI SDK v6, BGRA input, ayrı send thread
+ * Murat Demirci
  */
 
 #ifdef _WIN32
@@ -158,11 +145,7 @@ static Napi::Value CreateSender(const Napi::CallbackInfo& info) {
     s->fps_n  = info[3].As<Napi::Number>().Int32Value();
     s->fps_d  = info[4].As<Napi::Number>().Int32Value();
 
-    // NDI sender oluştur — clock devre dışı (zamanlamayı biz yönetiyoruz)
-    // DIPNOT: NDI clock'u kapatıyoruz çünkü frame timing'i Electron paint event
-    // tarafından belirleniyor. NDI clock açılırsa sender kendi hızında çeker ve
-    // frame timing tutarsızlığı olur. İleride genlock/referans sinyali eklenirse
-    // bu yaklaşım yeniden değerlendirilmeli.
+    // clock kapalı - timing electron tarafında, genlock eklenirse tekrar bak
     NDIlib_send_create_t create_desc;
     create_desc.p_ndi_name  = s->name.c_str();
     create_desc.p_groups    = nullptr;
@@ -223,11 +206,7 @@ static Napi::Value SendFrame(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    // JS buffer'dan kopyala (GC'nin buffer'ı silmesini önle)
-    // DIPNOT: Her frame'de ~8MB kopyalama yapıyoruz — bu maliyetli.
-    // İleride: (1) SharedArrayBuffer ile zero-copy, (2) ring buffer ile
-    // önceden ayrılmış bellek havuzu, veya (3) Napi::Reference ile
-    // buffer'ı pinleyip kopyalamadan kullanmak denenebilir.
+    // GC'den korumak için kopyala, ileride ring buffer denenebilir
     std::vector<uint8_t> frame_copy(expected);
     std::memcpy(frame_copy.data(), buf.Data(), expected);
 

@@ -1,10 +1,5 @@
-/**
- * Frame Queue — üretici-tüketici tampon kuyruğu
- * Coded by Murat Demirci
- *
- * Renderer frame üretir → kuyruğa koyar → output tüketir
- * Kuyruk dolarsa en eski frame atılır, boşsa son frame tekrarlanır.
- */
+// Frame kuyruğu - üretici/tüketici pattern
+// Murat Demirci
 
 export interface FrameData {
   buffer: Buffer | Uint8Array;
@@ -36,10 +31,10 @@ export class FrameQueue {
     };
   }
 
-  /** Frame'i kuyruğa ekle. Kuyruk doluysa en eskiyi at. */
   push(frame: FrameData): void {
     this.queue.push(frame);
     this.stats.totalFrames++;
+    // kuyruk doluysa en eskiyi at
     while (this.queue.length > this.capacity) {
       this.queue.shift();
       this.stats.droppedFrames++;
@@ -47,13 +42,13 @@ export class FrameQueue {
     this.stats.buffered = this.queue.length;
   }
 
-  /** Kuyruktan frame al. Boşsa son frame'i tekrarla. */
   pop(): FrameData | null {
     if (this.queue.length > 0) {
       this.lastFrame = this.queue.shift()!;
       this.stats.buffered = this.queue.length;
       return this.lastFrame;
     }
+    // kuyruk boşsa son frame'i tekrarla
     this.stats.lateFrames++;
     return this.lastFrame;
   }
@@ -70,7 +65,7 @@ export class FrameQueue {
     return { ...this.stats };
   }
 
-  /** Kuyruğu boş frame'lerle doldur (pre-roll tamponlama). */
+  // boş frame'lerle doldur (pre-roll)
   preroll(width: number, height: number): void {
     const emptyBuffer = new Uint8Array(width * height * 4);
     for (let i = 0; i < this.capacity; i++) {

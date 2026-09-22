@@ -1,146 +1,78 @@
 # OGraf Renderer
 
-EBU OGraf v1 compliant broadcast graphics renderer with NDI output. Renders HTML/CSS/JS graphic templates at 1080p25 and outputs Fill+Key over NDI — the same architecture used by professional broadcast graphics engines.
+Broadcast grafik render motoru. EBU OGraf v1 template'lerini alıp Fill+Key NDI olarak çıkış verir.
 
-## Features
+Electron'un offscreen rendering özelliğiyle Chromium'dan direkt BGRA piksel alıyoruz, sonra fill/key ayırıp iki ayrı NDI stream olarak gönderiyoruz. Kontrol paneli Express üzerinde çalışıyor, template'ler otomatik algılanıyor.
 
-- **NDI Fill+Key output** — two separate NDI streams (Fill and Key) at 1920×1080@25fps
-- **Electron offscreen rendering** — headless Chromium captures frames via paint event, no screen capture hacks
-- **Template hot-reload** — drop OGraf packages into `templates/` and they appear instantly
-- **Web control panel** — transport controls, data fields, and fill+key preview generated from manifest schema
-- **Three OGraf API modes** — Ferryman (load + playAction), native OGraf (playAction), and simple (play/stop/update)
-- **Native NDI addon** — C++ N-API wrapper around NDI SDK v6 with dedicated send thread and frame queue
+## Kurulum
 
-## Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+
-- [NDI SDK v6](https://ndi.video/download-ndi-sdk/) (for NDI output)
-- [NDI Runtime v6](https://ndi.video/download-ndi-runtime/) (on receiving machines)
-
-## Quick Start
+Node.js 18+, [NDI SDK v6](https://ndi.video/download-ndi-sdk/) ve [NDI Runtime v6](https://ndi.video/download-ndi-runtime/) gerekli.
 
 ```bash
 npm install
+cd src/ndi-addon && npx node-gyp rebuild && cd ../..
 npm start
 ```
 
-This starts:
-- Express server on `http://localhost:4000` (control panel + render page)
-- Electron offscreen renderer capturing frames at 25fps
-- NDI Fill+Key senders visible as **"OGraf Fill"** and **"OGraf Key"** in any NDI receiver
+`http://localhost:4000` kontrol paneli, NDI tarafında "OGraf Fill" ve "OGraf Key" olarak görünür.
 
-## NDI Output
+## Nasıl çalışıyor
 
-The renderer outputs two separate NDI streams, matching the Fill+Key workflow used in broadcast:
-
-| Stream | Content |
-|--------|---------|
-| **OGraf Fill** | RGB graphic composited on black, fully opaque |
-| **OGraf Key** | Alpha channel as grayscale luma key (white = visible, black = transparent) |
-
-Connect both to your mixer's Fill+Key inputs to overlay graphics with proper transparency.
-
-### Building the NDI Addon
-
-The native addon needs to be compiled once after cloning:
-
-```bash
-cd src/ndi-addon
-npx node-gyp rebuild
-```
-
-Requires NDI SDK v6 installed at `C:\Program Files\NDI\NDI 6 SDK` (Windows).
-
-## Architecture
+Electron offscreen BrowserWindow açıyor (1920x1080, görünmez). Template o pencerede render ediliyor. Her paint event'te BGRA buffer geliyor, biz de fill (RGB opak) ve key (alpha→luma) olarak ayırıp NDI'dan yolluyoruz.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Electron Main Process                                   │
-│                                                         │
-│  ┌──────────────┐    ┌─────────────────────────────┐    │
-│  │ Express      │    │ Offscreen BrowserWindow      │    │
-│  │ Server       │◄───│ (1920×1080, headless)        │    │
-│  │ :4000        │    │                              │    │
-│  │              │    │ paint event                   │    │
-│  │ /render ─────┼───►│   ├─► BGRA pixel buffer      │    │
-│  │ /  (panel)   │    │   │                          │    │
-│  │ /api/*       │    │   ├─► Fill (RGB on black)     │──►│ NDI "OGraf Fill"
-│  └──────────────┘    │   │                          │    │
-│                      │   └─► Key (alpha as luma)     │──►│ NDI "OGraf Key"
-│                      └─────────────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
+Electron
+├── Express :4000 (panel + render sayfası)
+└── Offscreen BrowserWindow
+    └── paint event → BGRA → fill/key split → NDI
 ```
 
-## Creating Templates
+## Template ekleme
 
-See the [Pipeline Overview](https://mos1907.github.io/ograf-renderer/pipeline.html) for the full workflow from After Effects to the templates folder.
-
-### Adding a Template
-
-Copy any OGraf-compliant package folder into `templates/`:
+`templates/` klasörüne OGraf paketi at, otomatik algılanır:
 
 ```
-templates/
-├── lower-third/
-│   ├── graphic.ograf.json   ← manifest
-│   └── graphic.mjs          ← web component
-├── ograf-example-headline/
-└── ograf-example-scoreboard/
+templates/my-graphic/
+├── graphic.ograf.json   (manifest)
+└── graphic.mjs          (web component)
 ```
 
-Templates are detected automatically via file watching — no restart needed.
+Üç farklı API destekleniyor: Ferryman (load+playAction), native OGraf (playAction/stopAction) ve basit (play/stop/update).
 
-## Scripts
+## Grafik oluşturma
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Build + run with Electron (NDI output active) |
-| `npm run preview` | Build + run Express server only (no NDI, no Electron) |
-| `npm run build` | Compile TypeScript |
+Template'leri birkaç farklı yolla oluşturabilirsiniz:
 
-## Roadmap
+**After Effects yolu:** AE'de tasarla → Bodymovin ile Lottie JSON export → [Ferryman](https://streamshapers.com)'da OGraf paketi oluştur
 
-### Output
-- [ ] Blackmagic Decklink SDI output (native addon wrapping Decklink SDK)
-- [ ] SMPTE ST 2110 output (IP-based broadcast)
-- [ ] Multiple channel support (simultaneous graphics on different NDI streams)
-- [ ] Audio pass-through
+**OGraf Studio:** [ZeroDensity'nin açık kaynak editörü](https://github.com/zerodensity/ograf-studio). Browser'da çalışıyor, doğrudan OGraf paketi export ediyor. Lottie animasyonları, vektör düzenleme, AI desteği var. After Effects lisansı gerektirmiyor.
 
-### NRCS / Rundown Integration
-- [ ] [MOS Gateway](https://github.com/mos1907/MosOnGo) integration (MOS Protocol 2.8.x)
-- [ ] NRCS rundown sync — receive running orders from iNews, ENPS, Octopus, OpenMedia
-- [ ] Drag-and-drop MOS objects — graphic templates as newsroom items
-- [ ] Automatic play/stop/update from rundown item changes (roElementAction)
-- [ ] Template ↔ MOS object mapping (mosObjCreate, mosItemReplace)
+**Elle yazım:** Vanilla HTML/CSS/JS ile Web Component yaz, play/stop/update metodlarını tanımla.
 
-### Automation & Control
-- [ ] GPI trigger input
-- [ ] Playlist / sequential playout
-- [ ] External API for third-party automation (Ross, Grass Valley, etc.)
-- [ ] Multi-user control panel (operator + producer roles)
+Detaylı pipeline için: [Pipeline Overview](https://mos1907.github.io/ograf-renderer/pipeline.html)
 
-### Ecosystem
-- [ ] [OGraf Studio](https://github.com/zerodensity/ograf-studio) workflow documentation
-- [ ] Template marketplace / shared library
+## Scriptler
 
-## Creating Graphics
+- `npm start` — derle + Electron ile çalıştır (NDI aktif)
+- `npm run preview` — sadece Express server (NDI yok)
+- `npm run build` — TypeScript derle
 
-You can create OGraf-compatible graphics using any of these tools:
+## Yapılacaklar
 
-| Tool | Description |
-|------|-------------|
-| [After Effects](https://www.adobe.com/products/aftereffects.html) + [Bodymovin](https://aescripts.com/bodymovin/) + [Ferryman](https://streamshapers.com) | Professional workflow — design in AE, export as Lottie, package with Ferryman |
-| [OGraf Studio](https://github.com/zerodensity/ograf-studio) | Free, open-source browser-based editor by ZeroDensity — design, animate and export OGraf packages in one tool, with AI assistance |
-| Manual HTML/CSS/JS | Write a Web Component by hand with play/stop/update methods — full control, no external tools needed |
+- Decklink SDI çıkış (native addon)
+- ST 2110 çıkış
+- [MOS Gateway](https://github.com/mos1907/MosOnGo) entegrasyonu — iNews/ENPS/Octopus rundown'larından grafik tetikleme
+- Çoklu kanal desteği
+- GPI tetikleme
+- Playlist/sıralı playout
 
-## Resources
+## Linkler
 
-- [EBU OGraf Specification](https://ograf.ebu.io/)
+- [EBU OGraf Spec](https://ograf.ebu.io/)
 - [NDI SDK](https://ndi.video/download-ndi-sdk/)
 - [OGraf Studio](https://github.com/zerodensity/ograf-studio)
 - [StreamShapers Ferryman](https://streamshapers.com)
-- [Lottie / Bodymovin](https://airbnb.io/lottie/)
 
-## License
+## Lisans
 
 MIT
